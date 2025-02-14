@@ -2,9 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "npm index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Ahmed Mostafa",
