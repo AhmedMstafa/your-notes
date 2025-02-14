@@ -1,5 +1,6 @@
 import express from 'express';
-import router from './routers/notes.router.js';
+import notesRouter from './routers/notes.router.js';
+import usersRouter from './routers/users.router.js';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import * as httpStatusText from './utils/httpStatusText.js';
@@ -14,7 +15,8 @@ const port = process.env.PORT;
 const url = process.env.MONGO_URL;
 app.use(express.json());
 app.use(cors());
-app.use('/api/notes', router);
+app.use('/api/notes', notesRouter);
+app.use('/api/users', usersRouter);
 
 main().then(() => console.log('mongodb server started'));
 
