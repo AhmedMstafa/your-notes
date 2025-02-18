@@ -1,3 +1,21 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import ModifyInfo from './components/ModifyInfo';
+import Notes from './components/notes';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    children: [
+      { path: 'modify-info', element: <ModifyInfo /> },
+      { path: 'notes', element: <Notes /> },
+    ],
+  },
+  { path: '/login', element: <Login /> },
+]);
+
 export default function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return <RouterProvider router={router} />;
 }
