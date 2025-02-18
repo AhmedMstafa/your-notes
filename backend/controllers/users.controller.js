@@ -58,7 +58,7 @@ const register = asyncWrapper(async (req, res, next) => {
 
 const login = asyncWrapper(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email && !password) {
+  if (!email || !password) {
     const error = appError.create(
       'email and password are required',
       400,
@@ -74,7 +74,7 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  const matchedPassword = bcrypt.compare(password, user.password);
+  const matchedPassword = await bcrypt.compare(password, user.password);
 
   if (user && matchedPassword) {
     return res.json({
