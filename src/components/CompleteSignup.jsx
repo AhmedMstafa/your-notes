@@ -1,6 +1,6 @@
 import Input from './Input';
 import {
-  Form,
+  useSubmit,
   Link,
   useNavigate,
   useNavigation,
@@ -8,14 +8,27 @@ import {
 } from 'react-router-dom';
 import { LuArrowRight } from 'react-icons/lu';
 
+import { useForm } from 'react-hook-form';
+
+const phoneNumberRegex =
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
 export default function CompleteSignupForm() {
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === 'submitting';
+  const submit = useSubmit();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const navigate = useNavigate();
-  function submitHandler() {
-    //
+  function submitHandler(formData) {
+    console.log(formData);
+    submit(formData, { method: 'PATCH' });
   }
 
   function Back() {
@@ -27,14 +40,44 @@ export default function CompleteSignupForm() {
       <h3 className="text-main-color text-[30px] sm:text-[40px] mt-2 text-center ">
         Complete Signup
       </h3>
-      <Form
-        method="patch"
-        className="w-[400px] max-w-full mx-auto px-2 flex flex-col gap-2"
+      <form
+        onSubmit={handleSubmit(submitHandler)}
+        className="relative w-[400px] max-w-full mx-auto px-2 flex flex-col gap-2"
       >
-        {data && <p className="text-red-400">{data.message}</p>}
-        <Input label="Username" type="text" name="userName" />
-        <Input label="Phone" type="text" name="phone" />
-        <Input label="Birthday Year" type="text" name="birthdayYear" />
+        {data && (
+          <p className="text-red-400 text-[12px] absolute right-2 top-3">
+            {data.message}
+          </p>
+        )}
+        <Input
+          label="Username"
+          type="text"
+          name="user-name"
+          register={register('user-name', { required: true, min: 3 })}
+          error={Boolean(errors['user-name'])}
+          errorMessage={'must be at least 3 characters'}
+        />
+        <Input
+          label="Phone"
+          type="text"
+          name="phone"
+          register={register('phone', {
+            required: true,
+            pattern: phoneNumberRegex,
+          })}
+          error={Boolean(errors.phone)}
+          errorMessage={'enter valid phone number'}
+        />
+        <Input
+          label="Birthday Year"
+          type="month"
+          name="birth-day-year"
+          register={register('birth-day-year', {
+            required: true,
+          })}
+          error={Boolean(errors['birth-day-year'])}
+          errorMessage={'birth day year is required'}
+        />
         <button
           disabled={isSubmitting}
           className="element-center gap-1 w-full bg-main-color text-center py-[5px] text-white text-[24px] cursor-pointer"
@@ -49,7 +92,7 @@ export default function CompleteSignupForm() {
         >
           Back
         </button>
-      </Form>
+      </form>
       <div className="element-center  md:flex-row gap-3.5 mt-2 text-center">
         <p>Already have an account!</p>
         <Link to="/login" className="text-main-color">
