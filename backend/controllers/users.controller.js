@@ -85,7 +85,11 @@ const login = asyncWrapper(async (req, res, next) => {
     });
   }
 
-  const error = appError.create('something wrong', 400, httpStatusText.ERROR);
+  const error = appError.create(
+    'username or password is incorrect',
+    400,
+    httpStatusText.ERROR
+  );
   return next(error);
 });
 
