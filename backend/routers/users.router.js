@@ -7,7 +7,7 @@ const router = Router();
 
 router
   .route('/')
-  .get(verfiyToken, allowedTo(userRules.ADMIN), userController.getAllusers);
+  .get(verfiyToken, allowedTo(userRules.ADMIN), userController.getAllUsers);
 
 router.route('/register').post(userController.register);
 

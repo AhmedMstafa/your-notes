@@ -5,7 +5,7 @@ import asyncWrapper from '../middlewares/asyncWrapper.js';
 import bcrypt from 'bcryptjs';
 import generateJWT from '../utils/generateJWT.js';
 import userRules from '../utils/user.Rules.js';
-const getAllusers = asyncWrapper(async (req, res) => {
+const getAllUsers = asyncWrapper(async (req, res) => {
   const { limit = 5, page = 1 } = req.query;
   const skip = (page - 1) * limit;
   const users = await userModel
@@ -98,7 +98,9 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
   const id = currentUser.id;
   const newData = req.body;
 
-  const hashedpassword = await bcrypt.hash(newData.password, 10);
+  if (newData.password) {
+    newData.password = await bcrypt.hash(newData.password, 10);
+  }
 
   const token = await generateJWT({
     email: newData.email,
@@ -106,13 +108,12 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
     role: currentUser.role,
   });
 
-  const updateduser = await userModel.updateOne(
+  const updatedUser = await userModel.updateOne(
     { _id: currentUser.id },
     {
       $set: {
         ...newData,
         _id: id,
-        password: hashedpassword,
         token: token,
         role: currentUser.role,
       },
@@ -120,7 +121,7 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
   );
   return res.status(200).json({
     status: httpStatusText.SUCCESS,
-    data: { course: updateduser },
+    data: { course: updatedUser },
   });
 });
 
@@ -128,7 +129,9 @@ const upgradeUser = asyncWrapper(async (req, res) => {
   const id = req.params.id;
   const newData = req.body;
 
-  const hashedpassword = await bcrypt.hash(newData.password, 10);
+  if (newData.password) {
+    newData.password = await bcrypt.hash(newData.password, 10);
+  }
 
   const token = await generateJWT({
     email: newData.email,
@@ -136,13 +139,12 @@ const upgradeUser = asyncWrapper(async (req, res) => {
     role: newData.role,
   });
 
-  const updateduser = await userModel.updateOne(
+  const updatedUser = await userModel.updateOne(
     { _id: id },
     {
       $set: {
         ...newData,
         _id: id,
-        password: hashedpassword,
         token: token,
         role: newData.role,
       },
@@ -150,7 +152,7 @@ const upgradeUser = asyncWrapper(async (req, res) => {
   );
   return res.status(200).json({
     status: httpStatusText.SUCCESS,
-    data: { course: updateduser },
+    data: { course: updatedUser },
   });
 });
 
@@ -162,7 +164,7 @@ const deleteUser = asyncWrapper(async (req, res) => {
 });
 
 export {
-  getAllusers,
+  getAllUsers,
   register,
   login,
   updateUserInfo,
