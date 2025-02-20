@@ -23,10 +23,14 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-        loader: checkAuthLoader,
+
         children: [
-          { path: 'modify-info', element: <ModifyInfo /> },
-          { path: 'notes', element: <Notes /> },
+          { index: true, element: <Notes />, loader: checkAuthLoader },
+          {
+            path: 'modify-info',
+            element: <ModifyInfo />,
+            loader: checkAuthLoader,
+          },
         ],
       },
       {
@@ -42,7 +46,7 @@ const router = createBrowserRouter([
           },
         ],
       },
-      { path: 'logout', action: logoutAction },
+      { path: '/logout', action: logoutAction },
     ],
   },
 ]);

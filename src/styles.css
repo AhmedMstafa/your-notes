@@ -4,11 +4,26 @@
 
 @theme {
   --color-main-color: #d375b9;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1400px;
+  --color-primary: #67dbda;
+  --spacing-content-hight: calc(100vh - 62px);
 }
 
 @layer {
+  .container {
+    @apply px-[10px] mx-auto;
+  }
+
   .element-center {
     @apply flex justify-center items-center;
+  }
+
+  .hover-color {
+    @apply hover:text-pink-500 transition-colors duration-300;
   }
 }
 
