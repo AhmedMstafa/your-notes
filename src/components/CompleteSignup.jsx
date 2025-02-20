@@ -27,12 +27,13 @@ export default function CompleteSignupForm() {
 
   const navigate = useNavigate();
   function submitHandler(formData) {
-    console.log(formData);
-    submit(formData, { method: 'PATCH' });
+    if (formData['user-name'] && formData.phone && formData['birth-day-year']) {
+      submit(formData, { method: 'PATCH' });
+    }
   }
 
   function Back() {
-    navigate('/login/signup');
+    navigate('/auth/signup');
     //
   }
   return (
@@ -76,7 +77,7 @@ export default function CompleteSignupForm() {
             required: true,
           })}
           error={Boolean(errors['birth-day-year'])}
-          errorMessage={'birth day year is required'}
+          errorMessage={'day year is required'}
         />
         <button
           disabled={isSubmitting}
@@ -95,7 +96,7 @@ export default function CompleteSignupForm() {
       </form>
       <div className="element-center  md:flex-row gap-3.5 mt-2 text-center">
         <p>Already have an account!</p>
-        <Link to="/login" className="text-main-color">
+        <Link to="/auth/login" className="text-main-color">
           Login
         </Link>
       </div>

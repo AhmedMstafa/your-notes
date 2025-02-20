@@ -9,6 +9,7 @@ import {
 
 import { LuArrowRight } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
+import { addToken, getAuthToken } from '../util/auth';
 
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -86,7 +87,7 @@ export default function SignupForm() {
       </form>
       <div className="element-center flex-col gap-0.5 mt-2 text-center">
         <p>Already have an account!</p>
-        <Link to="/login" className="text-main-color">
+        <Link to="/auth/login" className="text-main-color">
           Login
         </Link>
       </div>
@@ -97,15 +98,23 @@ export default function SignupForm() {
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }) {
   const method = request.method;
-  const data = await request.formData();
 
-  const eventData = {
-    userName: data.get('user-name') || 'user',
-    password: data.get('password') || '', // will be handle
-    email: data.get('email') || '', // will be handle
-    phone: data.get('phone') || '0',
-    birthdayYear: +data.get('birth-day-year') || 0,
-  };
+  const token = getAuthToken();
+  const data = await request.formData();
+  let eventData =
+    method === 'POST'
+      ? {
+          userName: 'user',
+          password: data.get('password') || '',
+          email: data.get('email') || '',
+          phone: '0',
+          birthdayYear: 0,
+        }
+      : {
+          userName: data.get('user-name') || 'user',
+          phone: data.get('phone') || '0',
+          birthdayYear: data.get('birth-day-year').split('-')[0] || 0,
+        };
 
   let url = 'http://localhost:3000/api/users';
 
@@ -115,28 +124,32 @@ export async function action({ request }) {
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
     },
     body: JSON.stringify(eventData),
   });
 
-  // if (!response.ok) {
-  //   throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
-  //     status: 500,
-  //   });
-  // }
-
   const responseData = await response.json();
-
   if (
+    responseData.code === 401 ||
     responseData.code === 400 ||
-    responseData.code === 500 ||
-    responseData.code === 401
+    responseData.code === 422
   ) {
     return responseData;
   }
 
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ message: 'Could not authenticate user.' }),
+      {
+        status: 500,
+      }
+    );
+  }
+
   if (method === 'POST') {
-    return redirect('/login/complete-signup');
+    addToken(responseData.data.user.token);
+    return redirect('/auth/complete-signup');
   }
 
   return redirect('/');

@@ -4,9 +4,10 @@ import {
   Link,
   useNavigation,
   useActionData,
+  redirect,
 } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
+import { addToken } from '../util/auth';
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -21,7 +22,6 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm();
   function submitHandler(formData) {
-    console.log(formData);
     if (formData.email && formData.password) {
       submit(formData, { method: 'POST' });
     }
@@ -66,7 +66,7 @@ export default function LoginForm() {
       </form>
       <div className="element-center flex-col sm:flex-row gap-3 mt-3 text-center">
         <p>Don’t have an account!</p>
-        <Link to="/login/signup" className="text-main-color">
+        <Link to="/auth/signup" className="text-main-color">
           Signup
         </Link>
       </div>
@@ -89,17 +89,26 @@ export async function action({ request }) {
     },
     body: JSON.stringify(eventData),
   });
-  console.log(eventData);
-
-  // if (!response.ok) {
-  //   throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
-  //     status: 500,
-  //   });
-  // }
 
   const responseData = await response.json();
-  console.log(responseData);
-  if (responseData.code === 400) {
+  if (
+    responseData.code === 401 ||
+    responseData.code === 400 ||
+    responseData.code === 422
+  ) {
     return responseData;
   }
+
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ message: 'Could not authenticate user.' }),
+      {
+        status: 500,
+      }
+    );
+  }
+
+  addToken(responseData.data.token)
+
+  return redirect('/');
 }
