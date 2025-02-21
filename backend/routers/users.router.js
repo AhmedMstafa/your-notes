@@ -5,9 +5,7 @@ import userRules from '../utils/user.Rules.js';
 import allowedTo from '../middlewares/allowedTo.js';
 const router = Router();
 
-router
-  .route('/')
-  .get(verfiyToken, allowedTo(userRules.ADMIN), userController.getAllUsers);
+router.route('/').get(verfiyToken, userController.getUserInfo);
 
 router.route('/register').post(userController.register);
 

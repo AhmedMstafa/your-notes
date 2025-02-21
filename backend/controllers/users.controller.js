@@ -5,11 +5,12 @@ import asyncWrapper from '../middlewares/asyncWrapper.js';
 import bcrypt from 'bcryptjs';
 import generateJWT from '../utils/generateJWT.js';
 import userRules from '../utils/user.Rules.js';
-const getAllUsers = asyncWrapper(async (req, res) => {
+const getUserInfo = asyncWrapper(async (req, res) => {
+  const userId = req.currentUser.id;
   const { limit = 5, page = 1 } = req.query;
   const skip = (page - 1) * limit;
   const users = await userModel
-    .find({}, { __v: false, password: false })
+    .find({ _id: userId }, { __v: false, password: false, token: false })
     .limit(limit)
     .skip(skip);
 
@@ -164,7 +165,7 @@ const deleteUser = asyncWrapper(async (req, res) => {
 });
 
 export {
-  getAllUsers,
+  getUserInfo,
   register,
   login,
   updateUserInfo,
