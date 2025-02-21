@@ -1,10 +1,10 @@
-import { useNavigate, useSubmit } from 'react-router-dom';
-import { MdOutlineAddTask } from 'react-icons/md';
+import { useNavigate, useSubmit, NavLink } from 'react-router-dom';
 import { MdOutlineNightlightRound } from 'react-icons/md';
+import { useState } from 'react';
 import Modal from './Modal';
 // import { MdLightMode } from 'react-icons/md';
+import { MdOutlineAddTask } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
-import { useState } from 'react';
 
 export default function Header() {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -24,6 +24,7 @@ export default function Header() {
   }
 
   function navigateTo(path) {
+    setModalVisible((prev) => !prev);
     navigate(path);
   }
 
@@ -36,10 +37,17 @@ export default function Header() {
       <nav className="h-full container ">
         <ul className="h-full flex items-center gap-3 md:gap-5 text-main-color">
           <li className="mr-auto">
-            <a href="/" className="flex items-center gap-1 hover-color">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive
+                  ? 'flex items-center gap-1 text-pink-500'
+                  : 'flex items-center gap-1 hover-color'
+              }
+            >
               <MdOutlineAddTask size={27} />
               <p className="text-[24px] ">Your Notes</p>
-            </a>
+            </NavLink>
           </li>
           <li>
             <button
