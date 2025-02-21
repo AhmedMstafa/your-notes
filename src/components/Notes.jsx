@@ -8,11 +8,14 @@ import { useEffect, useState } from 'react';
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
+  const [currentNotes, setCurrentNotes] = useState('ALL');
   const navigation = useNavigation();
   const submit = useSubmit();
   const data = useLoaderData();
+  let notesCount = 0;
 
   let isSubmitting = navigation.state === 'submitting';
+  const btnClasses = 'cursor-pointer font-semibold text-[14px]';
 
   useEffect(() => {
     if (data) {
@@ -28,16 +31,21 @@ export default function Notes() {
   } = useForm();
 
   function getAllNotes() {
-    //
+    setCurrentNotes('ALL');
+    setNotes(data.notes);
   }
   function getActiveNotes() {
-    //
+    const activeNotes = data.notes.filter((note) => note.isCompleted === false);
+    setCurrentNotes('ACTIVE');
+    setNotes(activeNotes);
   }
   function getCompletedNotes() {
-    //
+    const activeNotes = data.notes.filter((note) => note.isCompleted === true);
+    setCurrentNotes('COMPLETED');
+    setNotes(activeNotes);
   }
   function clearAllCompletedNotes() {
-    //
+    submit(null, { method: 'PATCH' });
   }
 
   function submitHandler(formData) {
@@ -48,7 +56,7 @@ export default function Notes() {
   }
 
   return (
-    <div className="max-w-[540px] flex flex-col gap-[20px] mx-auto">
+    <div className="max-w-[540px] flex flex-col gap-[20px] mx-auto mb-[50px]">
       <form
         onSubmit={handleSubmit(submitHandler)}
         className="relative flex w-full h-[64px] bg-white rounded-md p-[10px] shadow-md"
@@ -65,7 +73,7 @@ export default function Notes() {
           name="note"
           placeholder="Create new todo..."
           required
-          className="outline-0 text-secondary text-[18px] w-full"
+          className="outline-0 text-secondary-color text-[18px] w-full"
           {...register('note', { required: true })}
         />
         {Boolean(errors.note) && (
@@ -75,41 +83,59 @@ export default function Notes() {
         )}
       </form>
       <div className="flex flex-col w-full rounded-md shadow-md overflow-hidden">
-        {notes.map((note, index) => (
-          <Note
-            key={index}
-            id={note._id}
-            content={note.content}
-            isCompleted={note.isCompleted}
-          />
-        ))}
+        {notes.map((note, index) => {
+          notesCount++;
+          return (
+            <Note
+              key={index}
+              id={note._id}
+              content={note.content}
+              isCompleted={note.isCompleted}
+            />
+          );
+        })}
         <div className="flex items-center justify-around  min-h-[64px] bg-white">
-          <p className="text-secondary text-[14px]">{'5 items left'}</p>
+          <p className="text-secondary-color text-[14px]">
+            {notesCount ? `${notesCount} items left` : 'no items yet'}
+          </p>
           <div className="flex gap-3 ">
             <button
               onClick={getAllNotes}
-              className="cursor-pointer text-secondary font-semibold text-[14px]"
+              className={`${btnClasses} ${
+                currentNotes === 'ALL'
+                  ? ' text-main-color'
+                  : 'text-secondary-color'
+              }`}
             >
               All
             </button>
             <button
               onClick={getActiveNotes}
-              className="cursor-pointer text-secondary font-semibold text-[14px]"
+              className={`${btnClasses} ${
+                currentNotes === 'ACTIVE'
+                  ? ' text-main-color'
+                  : 'text-secondary-color'
+              }`}
             >
               Active
             </button>
             <button
               onClick={getCompletedNotes}
-              className="cursor-pointer text-secondary font-semibold text-[14px]"
+              className={`${btnClasses} ${
+                currentNotes === 'COMPLETED'
+                  ? ' text-main-color'
+                  : 'text-secondary-color'
+              }`}
             >
               Completed
             </button>
           </div>
           <button
+            disabled={isSubmitting}
             onClick={clearAllCompletedNotes}
-            className="cursor-pointer text-secondary text-[14px]"
+            className="cursor-pointer text-secondary-color hover-color text-[14px]"
           >
-            Clear Completed
+            {isSubmitting ? 'Loading...' : 'Clear Completed'}
           </button>
         </div>
       </div>
@@ -155,14 +181,14 @@ export async function action({ request }) {
   const data = await request.formData();
   const noteData = {
     content: data.get('note'),
-    isActive: data.get('is-active') || false,
+    isDeleted: data.get('is-deleted') || false,
     isCompleted: data.get('is-completed') || false,
   };
 
   let url = 'http://localhost:3000/api/notes/';
 
   if (method === 'PATCH') {
-    url += data.get('id');
+    url += data.get('id') || '';
   }
 
   const response = await fetch(url, {
