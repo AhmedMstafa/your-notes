@@ -12,6 +12,10 @@ import CompleteSignupForm from './components/CompleteSignup';
 import RootLayout from './pages/Root';
 import ErrorPage from './pages/Error';
 import { checkAuthLoader, tokenLoader } from './util/auth';
+import {
+  loader as notesLoader,
+  action as addNoteAction,
+} from './components/Notes';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -23,9 +27,14 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-
+        loader: checkAuthLoader,
         children: [
-          { index: true, element: <Notes />, loader: checkAuthLoader },
+          {
+            index: true,
+            element: <Notes />,
+            loader: notesLoader,
+            action: addNoteAction,
+          },
           {
             path: 'modify-info',
             element: <ModifyInfo />,

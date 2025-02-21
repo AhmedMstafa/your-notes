@@ -3,13 +3,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-main-color: #d375b9;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
   --breakpoint-2xl: 1400px;
+  --color-main-color: #d375b9;
   --color-primary: #67dbda;
+  --color-secondary: #9495a5;
   --spacing-content-hight: calc(100vh - 62px);
 }
 
