@@ -10,9 +10,7 @@ import {
 import { LuArrowRight } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
 import { addToken, getAuthToken } from '../util/auth';
-
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+import { emailRegex } from '../util/regex';
 
 export default function SignupForm() {
   const navigation = useNavigation();

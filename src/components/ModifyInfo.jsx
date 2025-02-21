@@ -1,3 +1,185 @@
+import Input from './Input';
+import { useForm } from 'react-hook-form';
+import {
+  useSubmit,
+  useActionData,
+  redirect,
+  useNavigation,
+} from 'react-router-dom';
+import { emailRegex, phoneNumberRegex, yearRegex } from '../util/regex';
+import { getAuthToken } from '../util/auth';
+
 export default function ModifyInfo() {
-  return <h1 className="text-3xl font-bold underline">Modify Info</h1>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const submit = useSubmit();
+  const data = useActionData();
+  const navigation = useNavigation();
+
+  let isSubmitting = navigation.state === 'submitting';
+
+  function submitHandler(formData) {
+    if (
+      formData['user-name'] &&
+      formData.phone &&
+      formData['birth-day-year'] &&
+      formData.email &&
+      formData.password
+    ) {
+      submit(formData, { method: 'PATCH' });
+      reset();
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit(submitHandler)}
+      className="max-w-[540px] flex flex-col gap-[20px] mx-auto"
+    >
+      <div className="flex flex-col w-full rounded-md shadow-md ">
+        <div className="flex items-center justify-center min-h-[64px] bg-white rounded-md">
+          <h3 className="text-[20px] text-main-color font-bold">
+            Modify User Information
+          </h3>
+        </div>
+      </div>
+      <div className="relative flex  w-full bg-white rounded-md p-[10px] shadow-md">
+        <div className="w-[400px] max-w-full flex flex-col gap-4 mx-auto py-[20px]">
+          {data && (
+            <p className="text-red-400 text-[12px]  absolute right-2 top-3">
+              {data.message}
+            </p>
+          )}
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            register={register('email', {
+              required: 'this field is required',
+              pattern: {
+                value: emailRegex,
+                message: 'enter a valid email',
+              },
+            })}
+            error={Boolean(errors.email)}
+            errorMessage={errors.email?.message || ''}
+          />
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            register={register('password', {
+              required: 'this field is required',
+              minLength: {
+                value: 6,
+                message: 'min 6 character',
+              },
+            })}
+            error={Boolean(errors.password)}
+            errorMessage={errors.password?.message || ''}
+          />
+          <Input
+            label="Username"
+            type="text"
+            name="user-name"
+            register={register('user-name', {
+              required: 'this field is required',
+            })}
+            error={Boolean(errors['user-name'])}
+            errorMessage={errors['user-name']?.message || ''}
+          />
+          <Input
+            label="Phone"
+            type="text"
+            name="phone"
+            register={register('phone', {
+              required: 'this field is required',
+              pattern: {
+                value: phoneNumberRegex,
+                message: 'enter a valid phone number',
+              },
+            })}
+            error={Boolean(errors.phone)}
+            errorMessage={errors.phone?.message || ''}
+          />
+          <Input
+            label="Birthday Year"
+            type="text"
+            name="birth-day-year"
+            register={register('birth-day-year', {
+              required: 'this field is required',
+              pattern: {
+                value: yearRegex,
+                message: 'enter a valid year',
+              },
+            })}
+            error={Boolean(errors['birth-day-year'])}
+            errorMessage={errors['birth-day-year']?.message || ''}
+          />
+        </div>
+      </div>
+      <button
+        disabled={isSubmitting}
+        className="flex flex-col w-full rounded-md shadow-md cursor-pointer"
+      >
+        <div className="flex items-center justify-center min-h-[64px] bg-main-color rounded-md">
+          <h3 className="text-[20px] text-white font-semibold">
+            {isSubmitting ? 'Save Changes...' : 'Save Changes'}
+          </h3>
+        </div>
+      </button>
+    </form>
+  );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export async function action({ request }) {
+  const method = request.method;
+
+  const token = getAuthToken();
+  const data = await request.formData();
+
+  let eventData = {
+    userName: data.get('user-name') || 'user',
+    email: data.get('email') || '',
+    password: data.get('password') || '',
+    phone: data.get('phone') || '0',
+    birthdayYear: data.get('birth-day-year').split('-')[0] || 0,
+  };
+
+  let url = 'http://localhost:3000/api/users';
+
+  const response = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+    body: JSON.stringify(eventData),
+  });
+
+  const responseData = await response.json();
+  if (
+    responseData.code === 401 ||
+    responseData.code === 400 ||
+    responseData.code === 422
+  ) {
+    return responseData;
+  }
+
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ message: 'Could not authenticate user.' }),
+      {
+        status: 500,
+      }
+    );
+  }
+
+  return redirect('/');
 }

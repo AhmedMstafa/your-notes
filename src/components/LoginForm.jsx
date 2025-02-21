@@ -8,8 +8,7 @@ import {
 } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { addToken } from '../util/auth';
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+import { emailRegex } from '../util/regex';
 
 export default function LoginForm() {
   const navigate = useNavigation();
@@ -108,7 +107,7 @@ export async function action({ request }) {
     );
   }
 
-  addToken(responseData.data.token)
+  addToken(responseData.data.token);
 
   return redirect('/');
 }

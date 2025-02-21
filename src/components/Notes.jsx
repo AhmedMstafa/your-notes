@@ -135,7 +135,7 @@ export default function Notes() {
             onClick={clearAllCompletedNotes}
             className="cursor-pointer text-secondary-color hover-color text-[14px]"
           >
-            {isSubmitting ? 'Loading...' : 'Clear Completed'}
+            Clear Completed
           </button>
         </div>
       </div>

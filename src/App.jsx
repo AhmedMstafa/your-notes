@@ -12,6 +12,7 @@ import CompleteSignupForm from './components/CompleteSignup';
 import RootLayout from './pages/Root';
 import ErrorPage from './pages/Error';
 import { checkAuthLoader, tokenLoader } from './util/auth';
+import { action as modifyInfoAction } from './components/ModifyInfo';
 import {
   loader as notesLoader,
   action as addNoteAction,
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
             path: 'modify-info',
             element: <ModifyInfo />,
             loader: checkAuthLoader,
+            action: modifyInfoAction,
           },
         ],
       },
