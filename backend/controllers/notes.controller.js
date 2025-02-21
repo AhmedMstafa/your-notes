@@ -7,7 +7,7 @@ import { validationResult } from 'express-validator';
 const getAllNotes = asyncWrapper(async (req, res) => {
   const currentUser = req.currentUser;
   const notes = await noteModel.find(
-    { userId: currentUser.id },
+    { userId: currentUser.id, isDeleted: false },
     { __v: false }
   );
 
@@ -68,4 +68,24 @@ const deleteNote = asyncWrapper(async (req, res) => {
   return res.status(200).json({ status: httpStatusText.SUCCESS, data: null });
 });
 
-export { getAllNotes, getNote, addNote, deleteNote, updateNote };
+const deleteAllCompleted = asyncWrapper(async (req, res) => {
+  const userId = req.currentUser.id;
+  try {
+    const result = await noteModel.updateMany(
+      { isCompleted: true, userId },
+      { isDeleted: true }
+    );
+    res.status(200).json(result);
+  } catch {
+    return res.status(404).json({ msg: 'invalid id' });
+  }
+});
+
+export {
+  getAllNotes,
+  getNote,
+  addNote,
+  deleteNote,
+  updateNote,
+  deleteAllCompleted,
+};
