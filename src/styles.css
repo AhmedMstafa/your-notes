@@ -30,4 +30,5 @@
 
 body {
   font-family: 'Josefin Sans', serif;
+  overflow: hidden;
 }

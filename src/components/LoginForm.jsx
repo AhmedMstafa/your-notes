@@ -7,7 +7,6 @@ import {
   redirect,
 } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { addToken } from '../util/auth';
 import { emailRegex } from '../util/regex';
 
 export default function LoginForm() {
@@ -43,17 +42,29 @@ export default function LoginForm() {
           label="Email"
           type="email"
           name="email"
-          register={register('email', { required: true, pattern: emailRegex })}
+          register={register('email', {
+            required: 'this field is required',
+            pattern: {
+              value: emailRegex,
+              message: 'enter a valid email',
+            },
+          })}
           error={Boolean(errors.email)}
-          errorMessage={'enter valid email address'}
+          errorMessage={errors.email?.message || ''}
         />
         <Input
           label="Password"
           type="password"
           name="password"
-          register={register('password', { required: true, minLength: 6 })}
+          register={register('password', {
+            required: 'this field is required',
+            minLength: {
+              value: 6,
+              message: 'min 6 character',
+            },
+          })}
           error={Boolean(errors.password)}
-          errorMessage={'min 6 character'}
+          errorMessage={errors.password?.message || ''}
         />
         <button
           // disabled={isSubmitting}
@@ -107,7 +118,10 @@ export async function action({ request }) {
     );
   }
 
-  addToken(responseData.data.token);
+  localStorage.setItem('token', responseData.data.token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem('expiration', expiration.toISOString());
 
   return redirect('/');
 }

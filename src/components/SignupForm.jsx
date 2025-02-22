@@ -9,7 +9,7 @@ import {
 
 import { LuArrowRight } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
-import { addToken, getAuthToken } from '../util/auth';
+import { getAuthToken } from '../util/auth';
 import { emailRegex } from '../util/regex';
 
 export default function SignupForm() {
@@ -47,32 +47,44 @@ export default function SignupForm() {
           label="Email"
           type="email"
           name="email"
-          register={register('email', { required: true, pattern: emailRegex })}
+          register={register('email', {
+            required: 'this field is required',
+            pattern: {
+              value: emailRegex,
+              message: 'enter a valid email',
+            },
+          })}
           error={Boolean(errors.email)}
-          errorMessage={'enter valid email address'}
+          errorMessage={errors.email?.message || ''}
         />
         <Input
           label="Password"
           type="password"
           name="password"
-          register={register('password', { required: true, minLength: 6 })}
+          register={register('password', {
+            required: 'this field is required',
+            minLength: {
+              value: 6,
+              message: 'min 6 character',
+            },
+          })}
           error={Boolean(errors.password)}
-          errorMessage={'must be at least 6 characters'}
+          errorMessage={errors.password?.message || ''}
         />
         <Input
           label="Confirm password"
           type="password"
           name="confirm-password"
           register={register('confirm-password', {
-            required: true,
-            minLength: 6,
+            required: 'this field is required',
+            minLength: {
+              value: 6,
+              message: 'min 6 character',
+            },
             validate: (value) => value === password || 'passwords do not match',
           })}
           error={Boolean(errors['confirm-password'])}
-          errorMessage={
-            errors['confirm-password']?.message ||
-            'must be at least 6 characters'
-          }
+          errorMessage={errors['confirm-password']?.message || ''}
         />
         <button
           disabled={isSubmitting}
@@ -146,7 +158,10 @@ export async function action({ request }) {
   }
 
   if (method === 'POST') {
-    addToken(responseData.data.user.token);
+    localStorage.setItem('token', responseData.data.user.token);
+    const expiration = new Date();
+    expiration.setHours(expiration.getHours() + 1);
+    localStorage.setItem('expiration', expiration.toISOString());
     return redirect('/auth/complete-signup');
   }
 

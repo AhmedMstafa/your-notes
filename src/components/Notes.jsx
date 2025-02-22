@@ -98,7 +98,7 @@ export default function Notes() {
             />
           );
         })}
-        <div className="flex items-center justify-around  min-h-[64px] bg-white">
+        <div className="flex items-center justify-around  min-h-[64px] bg-white ">
           <p className="text-secondary-color text-[14px]">
             {notesCount ? `${notesCount} items left` : 'no items yet'}
           </p>

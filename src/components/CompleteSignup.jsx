@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { LuArrowRight } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
-import { phoneNumberRegex } from '../util/regex';
+import { phoneNumberRegex, yearRegex } from '../util/regex';
 
 export default function CompleteSignupForm() {
   const navigation = useNavigation();
@@ -51,30 +51,39 @@ export default function CompleteSignupForm() {
           label="Username"
           type="text"
           name="user-name"
-          register={register('user-name', { required: true, min: 3 })}
+          register={register('user-name', {
+            required: 'this field is required',
+          })}
           error={Boolean(errors['user-name'])}
-          errorMessage={'must be at least 3 characters'}
+          errorMessage={errors['user-name']?.message || ''}
         />
         <Input
           label="Phone"
           type="text"
           name="phone"
           register={register('phone', {
-            required: true,
-            pattern: phoneNumberRegex,
+            required: 'this field is required',
+            pattern: {
+              value: phoneNumberRegex,
+              message: 'enter a valid phone number',
+            },
           })}
           error={Boolean(errors.phone)}
-          errorMessage={'enter valid phone number'}
+          errorMessage={errors.phone?.message || ''}
         />
         <Input
           label="Birthday Year"
-          type="month"
+          type="text"
           name="birth-day-year"
           register={register('birth-day-year', {
-            required: true,
+            required: 'this field is required',
+            pattern: {
+              value: yearRegex,
+              message: 'enter a valid year',
+            },
           })}
           error={Boolean(errors['birth-day-year'])}
-          errorMessage={'day year is required'}
+          errorMessage={errors['birth-day-year']?.message || ''}
         />
         <button
           disabled={isSubmitting}

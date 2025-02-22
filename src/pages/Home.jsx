@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="relative h-content-hight ">
+      <main className="relative">
         <div className="relative w-full h-[250px] left-0 top-0 bg-[url(/background-img.png)] bg-no-repeat shadow-lg">
           <div className="absolute w-full h-full z-0 bg-white/50 backdrop-invert-0"></div>
         </div>
