@@ -2,8 +2,10 @@ import { RiCheckboxBlankCircleLine } from 'react-icons/ri';
 import { TfiClose } from 'react-icons/tfi';
 import { useNavigation, useSubmit } from 'react-router-dom';
 import { HiCheckCircle } from 'react-icons/hi2';
-
+import { useDispatch } from 'react-redux';
+import { completeNote, deleteNote } from '../store/notes-slice';
 export default function Note({ id, content, isCompleted }) {
+  const dispatch = useDispatch();
   const submit = useSubmit();
   const navigation = useNavigation();
 
@@ -14,10 +16,12 @@ export default function Note({ id, content, isCompleted }) {
   }
 
   function handleCompleted() {
+    dispatch(completeNote({ id: id, isCompleted: !isCompleted }));
     updateNote({ note: content, ['is-completed']: !isCompleted, id });
   }
 
   function handleDelete() {
+    dispatch(deleteNote({ id }));
     updateNote({ note: content, ['is-deleted']: true, id });
   }
 

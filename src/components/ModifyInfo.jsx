@@ -39,7 +39,7 @@ export default function ModifyInfo() {
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className="max-w-[540px] flex flex-col gap-[20px] mx-auto"
+      className="max-w-[540px] flex flex-col gap-[20px] mx-auto mb-[50px]"
     >
       <div className="flex flex-col w-full rounded-md shadow-md ">
         <div className="flex items-center justify-center min-h-[64px] bg-white rounded-md">

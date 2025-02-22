@@ -1,14 +1,23 @@
+import { useEffect } from 'react';
 import { useLoaderData, useNavigation, useSubmit } from 'react-router-dom';
-import { getAuthToken } from '../util/auth';
 import { useForm } from 'react-hook-form';
+import { getAuthToken } from '../util/auth';
 import Note from './Note';
 import { RiCheckboxBlankCircleFill } from 'react-icons/ri';
 import { RiCheckboxBlankCircleLine } from 'react-icons/ri';
-import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  addNote,
+  replaceNotes,
+  clearAllCompleted,
+  getAllNotes,
+  getCompletedNotes,
+  getActiveNotes,
+} from '../store/notes-slice';
 
 export default function Notes() {
-  const [notes, setNotes] = useState([]);
-  const [currentNotes, setCurrentNotes] = useState('ALL');
+  const storedNotes = useSelector((state) => state.notes);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const submit = useSubmit();
   const data = useLoaderData();
@@ -18,10 +27,8 @@ export default function Notes() {
   const btnClasses = 'cursor-pointer font-semibold text-[14px]';
 
   useEffect(() => {
-    if (data) {
-      setNotes(data.notes);
-    }
-  }, [data]);
+    dispatch(replaceNotes({ notes: data.notes }));
+  }, [data, dispatch]);
 
   const {
     register,
@@ -30,26 +37,23 @@ export default function Notes() {
     formState: { errors },
   } = useForm();
 
-  function getAllNotes() {
-    setCurrentNotes('ALL');
-    setNotes(data.notes);
+  function getAllNotesHandler() {
+    dispatch(getAllNotes({ notes: data.notes }));
   }
-  function getActiveNotes() {
-    const activeNotes = data.notes.filter((note) => note.isCompleted === false);
-    setCurrentNotes('ACTIVE');
-    setNotes(activeNotes);
+  function getActiveNotesHandler() {
+    dispatch(getActiveNotes({ notes: data.notes }));
   }
-  function getCompletedNotes() {
-    const activeNotes = data.notes.filter((note) => note.isCompleted === true);
-    setCurrentNotes('COMPLETED');
-    setNotes(activeNotes);
+  function getCompletedNotesHandler() {
+    dispatch(getCompletedNotes({ notes: data.notes }));
   }
   function clearAllCompletedNotes() {
+    dispatch(clearAllCompleted());
     submit(null, { method: 'PATCH' });
   }
 
   function submitHandler(formData) {
     if (formData.note) {
+      dispatch(addNote({ note: formData.note }));
       submit(formData, { method: 'POST' });
       reset();
     }
@@ -83,7 +87,7 @@ export default function Notes() {
         )}
       </form>
       <div className="flex flex-col w-full rounded-md shadow-md overflow-hidden">
-        {notes.map((note, index) => {
+        {storedNotes.notes.map((note, index) => {
           notesCount++;
           return (
             <Note
@@ -100,9 +104,9 @@ export default function Notes() {
           </p>
           <div className="flex gap-3 ">
             <button
-              onClick={getAllNotes}
+              onClick={getAllNotesHandler}
               className={`${btnClasses} ${
-                currentNotes === 'ALL'
+                storedNotes.selected === 'ALL'
                   ? ' text-main-color'
                   : 'text-secondary-color'
               }`}
@@ -110,9 +114,9 @@ export default function Notes() {
               All
             </button>
             <button
-              onClick={getActiveNotes}
+              onClick={getActiveNotesHandler}
               className={`${btnClasses} ${
-                currentNotes === 'ACTIVE'
+                storedNotes.selected === 'ACTIVE'
                   ? ' text-main-color'
                   : 'text-secondary-color'
               }`}
@@ -120,9 +124,9 @@ export default function Notes() {
               Active
             </button>
             <button
-              onClick={getCompletedNotes}
+              onClick={getCompletedNotesHandler}
               className={`${btnClasses} ${
-                currentNotes === 'COMPLETED'
+                storedNotes.selected === 'COMPLETED'
                   ? ' text-main-color'
                   : 'text-secondary-color'
               }`}
