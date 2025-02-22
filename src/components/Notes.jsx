@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useLoaderData, useNavigation, useSubmit } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigation, useSubmit } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { getAuthToken } from '../util/auth';
 import Note from './Note';
@@ -14,21 +14,29 @@ import {
   getCompletedNotes,
   getActiveNotes,
 } from '../store/notes-slice';
+import { updateUserInfo } from '../store/user-slice';
 
 export default function Notes() {
   const storedNotes = useSelector((state) => state.notes);
+  const [data, setData] = useState();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const submit = useSubmit();
-  const data = useLoaderData();
+  const location = useLocation(); // تتبع تغييرات الموقع
   let notesCount = 0;
 
   let isSubmitting = navigation.state === 'submitting';
   const btnClasses = 'cursor-pointer font-semibold text-[14px]';
-
   useEffect(() => {
-    dispatch(replaceNotes({ notes: data.notes }));
-  }, [data, dispatch]);
+    async function fetchData() {
+      const data = await loadData();
+      setData(data);
+      dispatch(replaceNotes({ notes: data.notes }));
+      dispatch(updateUserInfo({ userInfo: data.userInfo }));
+    }
+
+    fetchData();
+  }, [location, dispatch]);
 
   const {
     register,
@@ -36,6 +44,34 @@ export default function Notes() {
     reset,
     formState: { errors },
   } = useForm();
+
+  async function loadData() {
+    const token = getAuthToken();
+    const notesResponse = await fetch('http://localhost:3000/api/notes', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Cache-Control': 'no-cache',
+      },
+    });
+
+    const userResponse = await fetch('http://localhost:3000/api/users', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Cache-Control': 'no-cache',
+      },
+    });
+
+    const [notesData, userData] = await Promise.all([
+      notesResponse.json(),
+      userResponse.json(),
+    ]);
+
+    return { notes: notesData.data.notes, userInfo: userData.data.users[0] };
+  }
 
   function getAllNotesHandler() {
     dispatch(getAllNotes({ notes: data.notes }));
@@ -148,36 +184,6 @@ export default function Notes() {
 }
 
 const token = getAuthToken();
-// eslint-disable-next-line react-refresh/only-export-components
-export async function loader() {
-  const response = await fetch('http://localhost:3000/api/notes', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const responseData = await response.json();
-  if (
-    responseData.code === 401 ||
-    responseData.code === 400 ||
-    responseData.code === 422
-  ) {
-    return responseData;
-  }
-
-  if (!response.ok) {
-    throw new Response(
-      JSON.stringify({ message: 'Could not authenticate user.' }),
-      {
-        status: 500,
-      }
-    );
-  }
-
-  return responseData.data;
-}
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }) {

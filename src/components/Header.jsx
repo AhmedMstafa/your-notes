@@ -11,6 +11,10 @@ export default function Header() {
   const navigate = useNavigate();
   const submit = useSubmit();
 
+  function onClickHandler() {
+    setModalVisible(false);
+  }
+
   function changeLangHandler() {
     //
   }
@@ -24,7 +28,7 @@ export default function Header() {
   }
 
   function navigateTo(path) {
-    setModalVisible((prev) => !prev);
+    onClickHandler();
     navigate(path);
   }
 
@@ -39,6 +43,7 @@ export default function Header() {
           <li className="mr-auto">
             <NavLink
               to="/"
+              onClick={onClickHandler}
               className={({ isActive }) =>
                 isActive
                   ? 'flex items-center gap-1 text-pink-500'

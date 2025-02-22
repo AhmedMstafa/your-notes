@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 import { emailRegex, phoneNumberRegex, yearRegex } from '../util/regex';
 import { getAuthToken } from '../util/auth';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUserInfo } from '../store/user-slice';
 
 export default function ModifyInfo() {
   const {
@@ -20,7 +22,8 @@ export default function ModifyInfo() {
   const submit = useSubmit();
   const data = useActionData();
   const navigation = useNavigation();
-
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const dispatch = useDispatch();
   let isSubmitting = navigation.state === 'submitting';
 
   function submitHandler(formData) {
@@ -31,6 +34,17 @@ export default function ModifyInfo() {
       formData.email &&
       formData.password
     ) {
+      dispatch(
+        updateUserInfo({
+          userInfo: {
+            userName: formData['user-name'],
+            phone: formData.phone,
+            birthdayYear: formData['birth-day-year'],
+            email: formData.email,
+          },
+        })
+      );
+
       submit(formData, { method: 'PATCH' });
       reset();
     }
@@ -59,6 +73,7 @@ export default function ModifyInfo() {
             label="Email"
             type="email"
             name="email"
+            placeholder={userInfo.email}
             register={register('email', {
               required: 'this field is required',
               pattern: {
@@ -87,6 +102,7 @@ export default function ModifyInfo() {
             label="Username"
             type="text"
             name="user-name"
+            placeholder={userInfo.userName}
             register={register('user-name', {
               required: 'this field is required',
             })}
@@ -97,6 +113,7 @@ export default function ModifyInfo() {
             label="Phone"
             type="text"
             name="phone"
+            placeholder={userInfo.phone}
             register={register('phone', {
               required: 'this field is required',
               pattern: {
@@ -111,6 +128,7 @@ export default function ModifyInfo() {
             label="Birthday Year"
             type="text"
             name="birth-day-year"
+            placeholder={userInfo.birthdayYear}
             register={register('birth-day-year', {
               required: 'this field is required',
               pattern: {

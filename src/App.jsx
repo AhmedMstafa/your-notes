@@ -13,10 +13,7 @@ import RootLayout from './pages/Root';
 import ErrorPage from './pages/Error';
 import { checkAuthLoader, tokenLoader } from './util/auth';
 import { action as modifyInfoAction } from './components/ModifyInfo';
-import {
-  loader as notesLoader,
-  action as addNoteAction,
-} from './components/Notes';
+import { action as addNoteAction } from './components/Notes';
 import { store } from './store';
 import { Provider } from 'react-redux';
 
@@ -36,7 +33,6 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Notes />,
-            loader: notesLoader,
             action: addNoteAction,
           },
           {

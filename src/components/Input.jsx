@@ -6,6 +6,7 @@ export default function Input({
   label,
   type,
   name,
+  placeholder = '',
   register,
   error,
   errorMessage,
@@ -40,6 +41,7 @@ export default function Input({
           autoComplete="off"
           maxLength={50}
           required
+          placeholder={placeholder}
           {...register}
         />
         {type === 'password' && (
