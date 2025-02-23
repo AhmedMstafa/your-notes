@@ -7,7 +7,8 @@ const router = Router();
 router
   .route('/')
   .get(verfiyToken, notesController.getAllNotes)
-  .post(verfiyToken, validationSchema(), notesController.addNote);
+  .post(verfiyToken, validationSchema(), notesController.addNote)
+  .patch(verfiyToken, notesController.deleteAllCompleted);
 
 router
   .route('/:id')

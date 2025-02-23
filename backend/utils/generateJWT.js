@@ -5,7 +5,7 @@ export default async (payload) => {
     payload,
     // eslint-disable-next-line no-undef
     process.env.JWT_SECRET_KEY,
-    { expiresIn: '10h' }
+    { expiresIn: '1h' }
   );
 
   return token;

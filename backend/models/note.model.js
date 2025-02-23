@@ -5,7 +5,7 @@ const noteSchema = new Schema({
     type: String,
     required: true,
   },
-  isActive: {
+  isDeleted: {
     type: Boolean,
     required: true,
   },
