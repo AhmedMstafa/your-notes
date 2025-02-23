@@ -105,7 +105,7 @@ export default function Notes() {
     >
       <form
         onSubmit={handleSubmit(submitHandler)}
-        className="relative flex w-full h-[64px] bg-white rounded-md p-[10px] shadow-md"
+        className="relative flex w-full h-[64px] bg-white dark:bg-dark-secondary-color rounded-md p-[10px] shadow-md"
       >
         <button disabled={isSubmitting} className="cursor-pointer mx-[15px]">
           {isSubmitting ? (
@@ -121,7 +121,7 @@ export default function Notes() {
             isEnglish ? 'Create new todo...' : 'إنشاء ملاحظة جديدة....'
           }
           required
-          className="outline-0 text-secondary-color text-[18px] w-full"
+          className="outline-0 text-secondary-color dark:text-white text-[18px] w-full"
           {...register('note', { required: true })}
         />
         {Boolean(errors.note) && (
@@ -142,7 +142,7 @@ export default function Notes() {
             />
           );
         })}
-        <div className="flex items-center justify-around  min-h-[64px] bg-white ">
+        <div className="flex items-center justify-around  min-h-[64px] bg-white dark:bg-dark-secondary-color">
           <p className="text-secondary-color text-[14px]">
             {isEnglish
               ? `${notesCount} items left`

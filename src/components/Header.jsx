@@ -2,14 +2,15 @@ import { useNavigate, useSubmit, NavLink } from 'react-router-dom';
 import { MdOutlineNightlightRound } from 'react-icons/md';
 import { useState } from 'react';
 import Modal from './Modal';
-// import { MdLightMode } from 'react-icons/md';
+import { MdLightMode } from 'react-icons/md';
 import { MdOutlineAddTask } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
-import { toggleLanguage } from '../store/theme-slice';
-import { languages } from '../store/theme-slice';
+import { toggleLanguage, toggleMode, reset } from '../store/theme-slice';
+import { languages, modes } from '../store/theme-slice';
 import { useSelector, useDispatch } from 'react-redux';
 export default function Header() {
   const currentLanguage = useSelector((state) => state.theme.language);
+  const currentMode = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function Header() {
   }
 
   function changeModeHandler() {
-    //
+    dispatch(toggleMode());
   }
 
   function modifyInfoHandler() {
@@ -38,12 +39,13 @@ export default function Header() {
   }
 
   function logoutHandler() {
+    dispatch(reset());
     submit(null, { action: '/logout', method: 'post' });
   }
 
   return (
-    <header className="h-[62px] shadow-md relative z-[1000]">
-      <nav className="h-full container ">
+    <header className="h-[62px] shadow-md relative z-[1000] dark:bg-dark-main-color">
+      <nav className="h-full container">
         <ul
           className={`${
             isEnglish ? '' : 'flex-row-reverse'
@@ -76,7 +78,11 @@ export default function Header() {
               onClick={changeModeHandler}
               className="rotate-[-24deg] cursor-pointer hover-color"
             >
-              <MdOutlineNightlightRound size={26} />
+              {currentMode === modes.LIGHT ? (
+                <MdOutlineNightlightRound size={26} />
+              ) : (
+                <MdLightMode size={26} />
+              )}
             </button>
           </li>
           <li>

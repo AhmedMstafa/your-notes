@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 export const languages = { ARABIC: 'ARABIC', ENGLISH: 'ENGLISH' };
+export const modes = { LIGHT: 'LIGHT', DARK: 'DARK' };
 
 const themeSlice = createSlice({
   name: 'theme',
   initialState: {
     language: localStorage.getItem('language') ?? languages.ARABIC,
+    mode: localStorage.getItem('mode') ?? modes.LIGHT,
   },
   reducers: {
     toggleLanguage: (state) => {
@@ -14,8 +16,16 @@ const themeSlice = createSlice({
           : languages.ARABIC;
       localStorage.setItem('language', state.language);
     },
+    toggleMode: (state) => {
+      state.mode = state.mode === modes.LIGHT ? modes.DARK : modes.LIGHT;
+      localStorage.setItem('mode', state.mode);
+    },
+    reset: (state) => {
+      state.language = languages.ENGLISH
+      state.mode = modes.LIGHT
+    }
   },
 });
 
-export const { toggleLanguage } = themeSlice.actions;
+export const { toggleLanguage, toggleMode,reset } = themeSlice.actions;
 export default themeSlice;

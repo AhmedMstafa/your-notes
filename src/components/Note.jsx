@@ -31,7 +31,7 @@ export default function Note({ id, content, isCompleted }) {
   }
 
   return (
-    <div className="flex items-center p-[10px] min-h-[64px] bg-white border-b-1 border-[#E3E4F1]">
+    <div className="flex items-center p-[10px] min-h-[64px] bg-white dark:bg-dark-secondary-color border-b-1 border-[#E3E4F1] dark:border-[#393A4B]">
       <button
         disabled={isSubmitting}
         onClick={handleCompleted}
@@ -45,7 +45,9 @@ export default function Note({ id, content, isCompleted }) {
       </button>
       <p
         className={`text-wrap break-words max-w-full overflow-hidden ${
-          isCompleted ? 'line-through text-[#E3E4F1]' : 'text-[#494C6B]'
+          isCompleted
+            ? 'line-through text-[#E3E4F1] dark:text-[#4D5067]'
+            : 'text-[#494C6B] dark:text-[#C8CBE7]'
         }`}
       >
         {content}

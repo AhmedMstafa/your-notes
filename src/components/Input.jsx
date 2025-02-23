@@ -35,7 +35,9 @@ export default function Input({
         </p>
       )}
       <label
-        className={`${isEnglish ? 'pl-[7.56px]' : 'ml-auto pr-[7.56px]'}`}
+        className={`${
+          isEnglish ? 'pl-[7.56px]' : 'ml-auto pr-[7.56px] dark:text-[#697386] '
+        }`}
         htmlFor={label}
       >
         {label}
@@ -43,7 +45,7 @@ export default function Input({
       <div className="relative">
         <input
           style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
-          className={`w-full outline-0 border ${
+          className={`w-full outline-0 border dark:bg-dark-third-color dark:text-white ${
             type === 'password' ? 'pr-[50px]' : ''
           } border-[#3C42571F] rounded-md shadow-sm h-[47px] px-[12px] py-[9px] ${
             error ? 'border border-red-500' : ''

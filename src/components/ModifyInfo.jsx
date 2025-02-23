@@ -70,13 +70,13 @@ export default function ModifyInfo() {
       className="max-w-[540px] flex flex-col gap-[20px] mx-auto mb-[50px]"
     >
       <div className="flex flex-col w-full rounded-md shadow-md ">
-        <div className="flex items-center justify-center min-h-[64px] bg-white rounded-md">
+        <div className="flex items-center justify-center min-h-[64px] dark:bg-dark-secondary-color bg-white rounded-md">
           <h3 className="text-[20px] text-main-color font-bold">
             {modifyUserInfo}
           </h3>
         </div>
       </div>
-      <div className="relative flex  w-full bg-white rounded-md p-[10px] shadow-md">
+      <div className="relative flex  w-full bg-white dark:bg-dark-secondary-color rounded-md p-[10px] shadow-md">
         <div className="w-[400px] max-w-full flex flex-col gap-4 mx-auto py-[20px]">
           {data && (
             <p className="text-red-400 text-[12px]  absolute right-2 top-3">

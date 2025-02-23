@@ -11,6 +11,9 @@
   --color-main-color: #d375b9;
   --color-primary: #67dbda;
   --color-secondary-color: #9495a5;
+  --color-dark-main-color: #241229;
+  --color-dark-secondary-color: #25273d;
+  --color-dark-third-color: #404363;
   --spacing-content-hight: calc(100vh - 62px);
 }
 
@@ -30,4 +33,8 @@
 
 body {
   font-family: 'Josefin Sans', serif;
+}
+
+#root {
+  height: 100vh;
 }
