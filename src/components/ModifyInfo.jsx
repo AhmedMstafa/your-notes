@@ -187,7 +187,7 @@ export async function action({ request }) {
     birthdayYear: data.get('birth-day-year').split('-')[0] || 0,
   };
 
-  let url = 'http://localhost:3000/api/users';
+  let url = 'https://your-notes.vercel.app/api/users';
 
   const response = await fetch(url, {
     method,

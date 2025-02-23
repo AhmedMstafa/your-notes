@@ -50,23 +50,29 @@ export default function Notes() {
 
   async function loadData() {
     const token = getAuthToken();
-    const notesResponse = await fetch('http://localhost:3000/api/notes', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Cache-Control': 'no-cache',
-      },
-    });
+    const notesResponse = await fetch(
+      'https://your-notes.vercel.app/api/notes',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
+        },
+      }
+    );
 
-    const userResponse = await fetch('http://localhost:3000/api/users', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Cache-Control': 'no-cache',
-      },
-    });
+    const userResponse = await fetch(
+      'https://your-notes.vercel.app/api/users',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
+        },
+      }
+    );
 
     const [notesData, userData] = await Promise.all([
       notesResponse.json(),
@@ -205,7 +211,7 @@ export async function action({ request }) {
     isCompleted: data.get('is-completed') || false,
   };
 
-  let url = 'http://localhost:3000/api/notes/';
+  let url = 'https://your-notes.vercel.app/api/notes/';
 
   if (method === 'PATCH') {
     url += data.get('id') || '';
