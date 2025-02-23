@@ -5,18 +5,23 @@ import Modal from './Modal';
 // import { MdLightMode } from 'react-icons/md';
 import { MdOutlineAddTask } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
-
+import { toggleLanguage } from '../store/theme-slice';
+import { languages } from '../store/theme-slice';
+import { useSelector, useDispatch } from 'react-redux';
 export default function Header() {
+  const currentLanguage = useSelector((state) => state.theme.language);
+  const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
   const navigate = useNavigate();
   const submit = useSubmit();
+  let isEnglish = currentLanguage === languages.ENGLISH;
 
   function onClickHandler() {
     setModalVisible(false);
   }
 
   function changeLangHandler() {
-    //
+    dispatch(toggleLanguage());
   }
 
   function changeModeHandler() {
@@ -39,8 +44,12 @@ export default function Header() {
   return (
     <header className="h-[62px] shadow-md relative z-[1000]">
       <nav className="h-full container ">
-        <ul className="h-full flex items-center gap-3 md:gap-5 text-main-color">
-          <li className="mr-auto">
+        <ul
+          className={`${
+            isEnglish ? '' : 'flex-row-reverse'
+          } h-full flex items-center gap-3 md:gap-5 text-main-color`}
+        >
+          <li className={`${isEnglish ? 'mr-auto' : 'ml-auto'}`}>
             <NavLink
               to="/"
               onClick={onClickHandler}
@@ -59,7 +68,7 @@ export default function Header() {
               onClick={changeLangHandler}
               className="text-[32px] cursor-pointer hover-color"
             >
-              Ar
+              {currentLanguage === languages.ARABIC ? 'En' : 'Ar'}
             </button>
           </li>
           <li>

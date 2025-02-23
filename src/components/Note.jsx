@@ -4,12 +4,17 @@ import { useNavigation, useSubmit } from 'react-router-dom';
 import { HiCheckCircle } from 'react-icons/hi2';
 import { useDispatch } from 'react-redux';
 import { completeNote, deleteNote } from '../store/notes-slice';
+import { useSelector } from 'react-redux';
+import { languages } from '../store/theme-slice';
+
 export default function Note({ id, content, isCompleted }) {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const dispatch = useDispatch();
   const submit = useSubmit();
   const navigation = useNavigation();
 
   let isSubmitting = navigation.state === 'submitting';
+  let isEnglish = currentLanguage === languages.ENGLISH;
 
   function updateNote(newValue) {
     submit(newValue, { method: 'PATCH' });
@@ -48,7 +53,9 @@ export default function Note({ id, content, isCompleted }) {
       <button
         disabled={isSubmitting}
         onClick={handleDelete}
-        className="cursor-pointer  ml-auto mx-[15px]"
+        className={`${
+          isEnglish ? 'ml-auto' : 'mr-auto'
+        } cursor-pointer mx-[15px]`}
       >
         <TfiClose size={24} color="#494C6B" />
       </button>

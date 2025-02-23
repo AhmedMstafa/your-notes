@@ -10,8 +10,10 @@ import { emailRegex, phoneNumberRegex, yearRegex } from '../util/regex';
 import { getAuthToken } from '../util/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserInfo } from '../store/user-slice';
+import { languages } from '../store/theme-slice';
 
 export default function ModifyInfo() {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const {
     register,
     handleSubmit,
@@ -25,6 +27,18 @@ export default function ModifyInfo() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const dispatch = useDispatch();
   let isSubmitting = navigation.state === 'submitting';
+
+  let isEnglish = currentLanguage === languages.ENGLISH;
+  let modifyUserInfo = isEnglish
+    ? 'Modify User Information'
+    : 'تعديل بيانات الحساب';
+  let saveChanges = isEnglish ? 'Save Changes' : 'حفظ التعديلات';
+  let emailLabel = isEnglish ? 'Email' : 'الحساب';
+  let passwordLabel = isEnglish ? 'Password' : 'الرقم السري';
+  let userNameLabel = isEnglish ? 'Username' : 'اسم المستخدم';
+  let phoneLabel = isEnglish ? 'Phone' : 'رقم الهاتف';
+  let birthDayYearLabel = isEnglish ? 'Birthday Year' : 'سنة الميلاد';
+  let loading = isEnglish ? 'Save Changes...' : 'حفظ التعديلات ...';
 
   function submitHandler(formData) {
     if (
@@ -58,7 +72,7 @@ export default function ModifyInfo() {
       <div className="flex flex-col w-full rounded-md shadow-md ">
         <div className="flex items-center justify-center min-h-[64px] bg-white rounded-md">
           <h3 className="text-[20px] text-main-color font-bold">
-            Modify User Information
+            {modifyUserInfo}
           </h3>
         </div>
       </div>
@@ -70,7 +84,7 @@ export default function ModifyInfo() {
             </p>
           )}
           <Input
-            label="Email"
+            label={emailLabel}
             type="email"
             name="email"
             placeholder={userInfo.email}
@@ -85,7 +99,7 @@ export default function ModifyInfo() {
             errorMessage={errors.email?.message || ''}
           />
           <Input
-            label="Password"
+            label={passwordLabel}
             type="password"
             name="password"
             register={register('password', {
@@ -99,7 +113,7 @@ export default function ModifyInfo() {
             errorMessage={errors.password?.message || ''}
           />
           <Input
-            label="Username"
+            label={userNameLabel}
             type="text"
             name="user-name"
             placeholder={userInfo.userName}
@@ -110,7 +124,7 @@ export default function ModifyInfo() {
             errorMessage={errors['user-name']?.message || ''}
           />
           <Input
-            label="Phone"
+            label={phoneLabel}
             type="text"
             name="phone"
             placeholder={userInfo.phone}
@@ -125,7 +139,7 @@ export default function ModifyInfo() {
             errorMessage={errors.phone?.message || ''}
           />
           <Input
-            label="Birthday Year"
+            label={birthDayYearLabel}
             type="text"
             name="birth-day-year"
             placeholder={userInfo.birthdayYear}
@@ -146,8 +160,11 @@ export default function ModifyInfo() {
         className="flex flex-col w-full rounded-md shadow-md cursor-pointer"
       >
         <div className="flex items-center justify-center min-h-[64px] bg-main-color rounded-md">
-          <h3 className="text-[20px] text-white font-semibold">
-            {isSubmitting ? 'Save Changes...' : 'Save Changes'}
+          <h3
+            style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
+            className="text-[20px] text-white font-semibold"
+          >
+            {isSubmitting ? loading : saveChanges}
           </h3>
         </div>
       </button>

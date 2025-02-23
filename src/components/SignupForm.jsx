@@ -8,15 +8,29 @@ import {
 } from 'react-router-dom';
 
 import { LuArrowRight } from 'react-icons/lu';
+import { LuArrowLeft } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
 import { getAuthToken } from '../util/auth';
 import { emailRegex } from '../util/regex';
+import { useSelector } from 'react-redux';
+import { languages } from '../store/theme-slice';
 
 export default function SignupForm() {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === 'submitting';
   const submit = useSubmit();
+
+  let isEnglish = currentLanguage === languages.ENGLISH;
+  let emailLabel = isEnglish ? 'Email' : 'الحساب';
+  let passwordLabel = isEnglish ? 'Password' : 'الرقم السري';
+  let confirmPasswordLabel = isEnglish ? 'Password' : 'تاكيد الرقم السري';
+  let signup = isEnglish ? 'Signup' : 'إنشاء حساب';
+  let completeSignup = isEnglish ? 'Complete signup' : 'إكمال إنشاء الحساب';
+  let haveAccount = isEnglish ? 'Don’t have an account!' : 'لا تمتلك حساب ';
+  let login = isEnglish ? 'Login' : 'تسجيل الدخول';
+  let loading = isEnglish ? 'Login...' : 'تسجيل الدخول ...';
 
   const {
     register,
@@ -32,7 +46,7 @@ export default function SignupForm() {
   return (
     <div>
       <h3 className="text-main-color text-[30px] sm:text-[40px] mt-2 text-center ">
-        Signup
+        {signup}
       </h3>
       <form
         onSubmit={handleSubmit(submitHandler)}
@@ -44,7 +58,7 @@ export default function SignupForm() {
           </p>
         )}
         <Input
-          label="Email"
+          label={emailLabel}
           type="email"
           name="email"
           register={register('email', {
@@ -58,7 +72,7 @@ export default function SignupForm() {
           errorMessage={errors.email?.message || ''}
         />
         <Input
-          label="Password"
+          label={passwordLabel}
           type="password"
           name="password"
           register={register('password', {
@@ -72,7 +86,7 @@ export default function SignupForm() {
           errorMessage={errors.password?.message || ''}
         />
         <Input
-          label="Confirm password"
+          label={confirmPasswordLabel}
           type="password"
           name="confirm-password"
           register={register('confirm-password', {
@@ -87,18 +101,25 @@ export default function SignupForm() {
           errorMessage={errors['confirm-password']?.message || ''}
         />
         <button
+          style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
           disabled={isSubmitting}
-          className="element-center gap-1 w-full bg-main-color text-center py-[5px] text-white text-[24px] cursor-pointer"
+          className={`element-center ${
+            !isEnglish ? 'flex-row-reverse' : ''
+          } gap-1 w-full bg-main-color text-center py-[5px] text-white text-[24px] cursor-pointer`}
           onClick={submitHandler}
         >
-          {isSubmitting ? 'Loading...' : 'Complete signup'}
-          <LuArrowRight />
+          {isSubmitting ? loading : completeSignup}
+          {isEnglish ? <LuArrowRight /> : <LuArrowLeft />}
         </button>
       </form>
-      <div className="element-center flex-col gap-0.5 mt-2 text-center">
-        <p>Already have an account!</p>
-        <Link to="/auth/login" className="text-main-color">
-          Login
+      <div
+        className={`element-center flex-col ${
+          isEnglish ? 'sm:flex-row' : 'sm:flex-row-reverse '
+        } gap-3 mt-3 text-center`}
+      >
+        <p>{haveAccount}</p>
+        <Link to="/auth/login" className="text-main-color ">
+          {login}
         </Link>
       </div>
     </div>

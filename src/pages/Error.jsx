@@ -15,7 +15,7 @@ export default function ErrorPage() {
   }
 
   return (
-    <div className="">
+    <div className="text-center">
       <h1>{title}</h1>
       {message}
     </div>

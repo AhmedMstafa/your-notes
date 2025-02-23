@@ -15,15 +15,18 @@ import {
   getActiveNotes,
 } from '../store/notes-slice';
 import { updateUserInfo } from '../store/user-slice';
+import { languages } from '../store/theme-slice';
 
 export default function Notes() {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const storedNotes = useSelector((state) => state.notes);
   const [data, setData] = useState();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const submit = useSubmit();
-  const location = useLocation(); // تتبع تغييرات الموقع
+  const location = useLocation();
   let notesCount = 0;
+  let isEnglish = currentLanguage === languages.ENGLISH;
 
   let isSubmitting = navigation.state === 'submitting';
   const btnClasses = 'cursor-pointer font-semibold text-[14px]';
@@ -96,7 +99,10 @@ export default function Notes() {
   }
 
   return (
-    <div className="max-w-[540px] flex flex-col gap-[20px] mx-auto mb-[50px]">
+    <div
+      style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
+      className="max-w-[540px] flex flex-col gap-[20px] mx-auto mb-[50px]"
+    >
       <form
         onSubmit={handleSubmit(submitHandler)}
         className="relative flex w-full h-[64px] bg-white rounded-md p-[10px] shadow-md"
@@ -111,7 +117,9 @@ export default function Notes() {
         <input
           type="text"
           name="note"
-          placeholder="Create new todo..."
+          placeholder={
+            isEnglish ? 'Create new todo...' : 'إنشاء ملاحظة جديدة....'
+          }
           required
           className="outline-0 text-secondary-color text-[18px] w-full"
           {...register('note', { required: true })}
@@ -136,7 +144,9 @@ export default function Notes() {
         })}
         <div className="flex items-center justify-around  min-h-[64px] bg-white ">
           <p className="text-secondary-color text-[14px]">
-            {notesCount ? `${notesCount} items left` : 'no items yet'}
+            {isEnglish
+              ? `${notesCount} items left`
+              : `${notesCount} ملاحظات متبقيه`}
           </p>
           <div className="flex gap-3 ">
             <button
@@ -147,7 +157,7 @@ export default function Notes() {
                   : 'text-secondary-color'
               }`}
             >
-              All
+              {isEnglish ? 'All' : 'الكل'}
             </button>
             <button
               onClick={getActiveNotesHandler}
@@ -157,7 +167,7 @@ export default function Notes() {
                   : 'text-secondary-color'
               }`}
             >
-              Active
+              {isEnglish ? 'Active' : 'متبقي'}
             </button>
             <button
               onClick={getCompletedNotesHandler}
@@ -167,7 +177,7 @@ export default function Notes() {
                   : 'text-secondary-color'
               }`}
             >
-              Completed
+              {isEnglish ? 'Completed' : 'منتهي'}
             </button>
           </div>
           <button
@@ -175,7 +185,7 @@ export default function Notes() {
             onClick={clearAllCompletedNotes}
             className="cursor-pointer text-secondary-color hover-color text-[14px]"
           >
-            Clear Completed
+            {isEnglish ? 'Clear Completed' : 'مسح ما تم إنهاؤه'}
           </button>
         </div>
       </div>

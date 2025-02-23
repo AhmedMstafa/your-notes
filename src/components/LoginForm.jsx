@@ -8,26 +8,41 @@ import {
 } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { emailRegex } from '../util/regex';
+import { useSelector } from 'react-redux';
+import { languages } from '../store/theme-slice';
 
 export default function LoginForm() {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const navigate = useNavigation();
   const data = useActionData();
   const submit = useSubmit();
   const isSubmitting = navigate.state === 'submitting';
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   function submitHandler(formData) {
     if (formData.email && formData.password) {
       submit(formData, { method: 'POST' });
     }
   }
+
+  let isEnglish = currentLanguage === languages.ENGLISH;
+
+  let login = isEnglish ? 'Login' : 'تسجيل الدخول';
+  let emailLabel = isEnglish ? 'Email' : 'الحساب';
+  let passwordLabel = isEnglish ? 'Password' : 'الرقم السري';
+  let haveAccount = isEnglish ? 'Don’t have an account!' : 'لا تمتلك حساب ';
+  let signup = isEnglish ? 'Signup' : 'تسجيل الدخول';
+  let loading = isEnglish ? 'Login...' : 'تسجيل الدخول ...';
+
   return (
     <div>
       <h3 className="text-main-color text-[48px] text-center my-3 mb-[10px]">
-        Login
+        {login}
       </h3>
       <form
         onSubmit={handleSubmit(submitHandler)}
@@ -39,7 +54,7 @@ export default function LoginForm() {
           </p>
         )}
         <Input
-          label="Email"
+          label={emailLabel}
           type="email"
           name="email"
           register={register('email', {
@@ -53,7 +68,7 @@ export default function LoginForm() {
           errorMessage={errors.email?.message || ''}
         />
         <Input
-          label="Password"
+          label={passwordLabel}
           type="password"
           name="password"
           register={register('password', {
@@ -67,17 +82,22 @@ export default function LoginForm() {
           errorMessage={errors.password?.message || ''}
         />
         <button
-          // disabled={isSubmitting}
+          disabled={isSubmitting}
+          style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
           className="w-full bg-main-color text-center py-[10px] text-white text-[24px] cursor-pointer"
           onClick={submitHandler}
         >
-          {isSubmitting ? 'Loading...' : 'Login'}
+          {isSubmitting ? loading : login}
         </button>
       </form>
-      <div className="element-center flex-col sm:flex-row gap-3 mt-3 text-center">
-        <p>Don’t have an account!</p>
+      <div
+        className={`element-center flex-col ${
+          isEnglish ? 'sm:flex-row' : 'sm:flex-row-reverse '
+        } gap-3 mt-3 text-center`}
+      >
+        <p className="rtl">{haveAccount}</p>
         <Link to="/auth/signup" className="text-main-color">
-          Signup
+          {signup}
         </Link>
       </div>
     </div>

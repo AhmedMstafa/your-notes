@@ -7,10 +7,14 @@ import {
   useActionData,
 } from 'react-router-dom';
 import { LuArrowRight } from 'react-icons/lu';
+import { LuArrowLeft } from 'react-icons/lu';
 import { useForm } from 'react-hook-form';
 import { phoneNumberRegex, yearRegex } from '../util/regex';
+import { useSelector } from 'react-redux';
+import { languages } from '../store/theme-slice';
 
 export default function CompleteSignupForm() {
+  const currentLanguage = useSelector((state) => state.theme.language);
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === 'submitting';
@@ -33,10 +37,21 @@ export default function CompleteSignupForm() {
     navigate('/auth/signup');
     //
   }
+
+  let isEnglish = currentLanguage === languages.ENGLISH;
+  let userNameLabel = isEnglish ? 'Username' : 'اسم المستخدم';
+  let phoneLabel = isEnglish ? 'Phone' : 'رقم الهاتف';
+  let birthDayYearLabel = isEnglish ? 'Birthday Year' : 'سنة الميلاد';
+  let completeSignup = isEnglish ? 'Complete signup' : 'إكمال إنشاء الحساب';
+  let goBack = isEnglish ? 'Back' : 'للخلف';
+  let haveAccount = isEnglish ? 'Don’t have an account!' : 'لا تمتلك حساب ';
+  let login = isEnglish ? 'Login' : 'تسجيل الدخول';
+  let loading = isEnglish ? 'Login...' : 'تسجيل الدخول ...';
+
   return (
     <div>
       <h3 className="text-main-color text-[30px] sm:text-[40px] mt-2 text-center ">
-        Complete Signup
+        {completeSignup}
       </h3>
       <form
         onSubmit={handleSubmit(submitHandler)}
@@ -48,7 +63,7 @@ export default function CompleteSignupForm() {
           </p>
         )}
         <Input
-          label="Username"
+          label={userNameLabel}
           type="text"
           name="user-name"
           register={register('user-name', {
@@ -58,7 +73,7 @@ export default function CompleteSignupForm() {
           errorMessage={errors['user-name']?.message || ''}
         />
         <Input
-          label="Phone"
+          label={phoneLabel}
           type="text"
           name="phone"
           register={register('phone', {
@@ -72,7 +87,7 @@ export default function CompleteSignupForm() {
           errorMessage={errors.phone?.message || ''}
         />
         <Input
-          label="Birthday Year"
+          label={birthDayYearLabel}
           type="text"
           name="birth-day-year"
           register={register('birth-day-year', {
@@ -86,24 +101,26 @@ export default function CompleteSignupForm() {
           errorMessage={errors['birth-day-year']?.message || ''}
         />
         <button
+          style={{ direction: isEnglish ? 'ltr' : 'rtl' }}
           disabled={isSubmitting}
           className="element-center gap-1 w-full bg-main-color text-center py-[5px] text-white text-[24px] cursor-pointer"
           onClick={submitHandler}
         >
-          {isSubmitting ? 'Loading...' : 'Complete signup'}
+          {isSubmitting ? loading : completeSignup}
           <LuArrowRight />
         </button>
         <button
-          className="w-full bg-[#7C8495] text-center py-[5px] text-white text-[24px] cursor-pointer"
+          className="element-center gap-1 w-full bg-[#7C8495] flex-row-reverse text-center py-[5px] text-white text-[24px] cursor-pointer"
           onClick={Back}
         >
-          Back
+          {goBack}
+          {!isEnglish ? <LuArrowRight /> : <LuArrowLeft />}
         </button>
       </form>
       <div className="element-center  md:flex-row gap-3.5 mt-2 text-center">
-        <p>Already have an account!</p>
+        <p>{haveAccount}</p>
         <Link to="/auth/login" className="text-main-color">
-          Login
+          {login}
         </Link>
       </div>
     </div>
