@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { useNavigation, useSubmit } from 'react-router-dom';
+import {
+  useNavigation,
+  useSubmit,
+  useLoaderData,
+  useLocation,
+} from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { getAuthToken } from '../util/auth';
 import Note from './Note';
@@ -14,7 +19,6 @@ import {
   getCompletedNotes,
   getActiveNotes,
 } from '../store/notes-slice';
-import { updateUserInfo } from '../store/user-slice';
 import { languages } from '../store/theme-slice';
 
 export default function Notes() {
@@ -25,18 +29,14 @@ export default function Notes() {
   const submit = useSubmit();
   let notesCount = 0;
   let isEnglish = currentLanguage === languages.ENGLISH;
+  const data = useLoaderData();
+  const location = useLocation();
 
   let isSubmitting = navigation.state === 'submitting';
   const btnClasses = 'cursor-pointer font-semibold text-[14px]';
   useEffect(() => {
-    async function fetchData() {
-      const data = await loadData();
-      dispatch(replaceNotes({ notes: data.notes }));
-      dispatch(updateUserInfo({ userInfo: data.userInfo }));
-    }
-
-    fetchData();
-  }, []);
+    dispatch(replaceNotes({ notes: data }));
+  }, [dispatch, data, location]);
 
   const {
     register,
@@ -44,40 +44,6 @@ export default function Notes() {
     reset,
     formState: { errors },
   } = useForm();
-
-  async function loadData() {
-    const token = getAuthToken();
-    const notesResponse = await fetch(
-      'https://your-notes.vercel.app/api/notes',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-          'Cache-Control': 'no-cache',
-        },
-      }
-    );
-
-    const userResponse = await fetch(
-      'https://your-notes.vercel.app/api/users',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-          'Cache-Control': 'no-cache',
-        },
-      }
-    );
-
-    const [notesData, userData] = await Promise.all([
-      notesResponse.json(),
-      userResponse.json(),
-    ]);
-
-    return { notes: notesData.data.notes, userInfo: userData.data.users[0] };
-  }
 
   function getAllNotesHandler() {
     dispatch(getAllNotes());
@@ -197,6 +163,22 @@ export default function Notes() {
 }
 
 const token = getAuthToken();
+
+// eslint-disable-next-line react-refresh/only-export-components
+export async function loader() {
+  const notesResponse = await fetch('https://your-notes.vercel.app/api/notes', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'Cache-Control': 'no-cache',
+    },
+  });
+
+  const notesData = await notesResponse.json();
+
+  return notesData.data.notes;
+}
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }) {
