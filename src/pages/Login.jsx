@@ -27,7 +27,7 @@ export default function Login() {
             {currentLanguage === languages.ARABIC ? 'En' : 'Ar'}
           </button>
         </div>
-        <div className="bg-white h-4/6 md:h-full md:w-1/2">
+        <div className="bg-white dark:bg-dark-secondary-color h-4/6 md:h-full md:w-1/2">
           <Outlet />
         </div>
       </section>

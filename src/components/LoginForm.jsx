@@ -95,7 +95,7 @@ export default function LoginForm() {
           isEnglish ? 'sm:flex-row' : 'sm:flex-row-reverse '
         } gap-3 mt-3 text-center`}
       >
-        <p className="rtl">{haveAccount}</p>
+        <p className="rtl dark:text-white">{haveAccount}</p>
         <Link to="/auth/signup" className="text-main-color">
           {signup}
         </Link>
