@@ -117,7 +117,7 @@ export default function CompleteSignupForm() {
           {!isEnglish ? <LuArrowRight /> : <LuArrowLeft />}
         </button>
       </form>
-      <div className="element-center  md:flex-row gap-3.5 mt-2 text-center">
+      <div className="element-center  md:flex-row gap-3.5 mt-2 text-center dark:text-white">
         <p>{haveAccount}</p>
         <Link to="/auth/login" className="text-main-color">
           {login}

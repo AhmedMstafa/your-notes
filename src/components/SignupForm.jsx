@@ -115,7 +115,7 @@ export default function SignupForm() {
       <div
         className={`element-center flex-col ${
           isEnglish ? 'sm:flex-row' : 'sm:flex-row-reverse '
-        } gap-3 mt-3 text-center`}
+        } gap-3 mt-3 text-center dark:text-white`}
       >
         <p>{haveAccount}</p>
         <Link to="/auth/login" className="text-main-color ">
