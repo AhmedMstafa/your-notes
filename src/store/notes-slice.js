@@ -52,6 +52,7 @@ const notesSlice = createSlice({
     },
     clearAllCompleted: (state) => {
       state.notes = state.notes.filter((note) => note.isCompleted !== true);
+      state.selectedNotes = filterSelectedNotes(state.selected, state.notes);
     },
     getAllNotes: (state) => {
       state.selectedNotes = state.notes;
