@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigation, useSubmit } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigation, useSubmit } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { getAuthToken } from '../util/auth';
 import Note from './Note';
@@ -20,11 +20,9 @@ import { languages } from '../store/theme-slice';
 export default function Notes() {
   const currentLanguage = useSelector((state) => state.theme.language);
   const storedNotes = useSelector((state) => state.notes);
-  const [data, setData] = useState();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const submit = useSubmit();
-  const location = useLocation();
   let notesCount = 0;
   let isEnglish = currentLanguage === languages.ENGLISH;
 
@@ -33,13 +31,12 @@ export default function Notes() {
   useEffect(() => {
     async function fetchData() {
       const data = await loadData();
-      setData(data);
       dispatch(replaceNotes({ notes: data.notes }));
       dispatch(updateUserInfo({ userInfo: data.userInfo }));
     }
 
     fetchData();
-  }, [location, dispatch]);
+  }, []);
 
   const {
     register,
@@ -83,13 +80,13 @@ export default function Notes() {
   }
 
   function getAllNotesHandler() {
-    dispatch(getAllNotes({ notes: data.notes }));
+    dispatch(getAllNotes());
   }
   function getActiveNotesHandler() {
-    dispatch(getActiveNotes({ notes: data.notes }));
+    dispatch(getActiveNotes());
   }
   function getCompletedNotesHandler() {
-    dispatch(getCompletedNotes({ notes: data.notes }));
+    dispatch(getCompletedNotes());
   }
   function clearAllCompletedNotes() {
     dispatch(clearAllCompleted());
@@ -137,7 +134,7 @@ export default function Notes() {
         )}
       </form>
       <div className="flex flex-col w-full rounded-md shadow-md overflow-hidden">
-        {storedNotes.notes.map((note, index) => {
+        {storedNotes.selectedNotes.map((note, index) => {
           notesCount++;
           return (
             <Note

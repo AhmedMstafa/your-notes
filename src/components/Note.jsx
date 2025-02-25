@@ -22,7 +22,7 @@ export default function Note({ id, content, isCompleted }) {
 
   function handleCompleted() {
     dispatch(completeNote({ id: id, isCompleted: !isCompleted }));
-    updateNote({ note: content, ['is-completed']: !isCompleted, id });
+    updateNote({ note: content, ['is-completed']: !isCompleted, id: id });
   }
 
   function handleDelete() {
