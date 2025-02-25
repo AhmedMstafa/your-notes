@@ -162,10 +162,9 @@ export default function Notes() {
   );
 }
 
-const token = getAuthToken();
-
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
+  const token = getAuthToken();
   const notesResponse = await fetch('https://your-notes.vercel.app/api/notes', {
     method: 'GET',
     headers: {
@@ -182,6 +181,8 @@ export async function loader() {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }) {
+  const token = getAuthToken();
+
   const method = request.method;
   const data = await request.formData();
   const noteData = {

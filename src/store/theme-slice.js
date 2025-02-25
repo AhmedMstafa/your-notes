@@ -5,7 +5,7 @@ export const modes = { LIGHT: 'LIGHT', DARK: 'DARK' };
 const themeSlice = createSlice({
   name: 'theme',
   initialState: {
-    language: localStorage.getItem('language') ?? languages.ARABIC,
+    language: localStorage.getItem('language') ?? languages.ENGLISH,
     mode: localStorage.getItem('mode') ?? modes.LIGHT,
   },
   reducers: {
@@ -21,11 +21,11 @@ const themeSlice = createSlice({
       localStorage.setItem('mode', state.mode);
     },
     reset: (state) => {
-      state.language = languages.ENGLISH
-      state.mode = modes.LIGHT
-    }
+      state.language = languages.ENGLISH;
+      state.mode = modes.LIGHT;
+    },
   },
 });
 
-export const { toggleLanguage, toggleMode,reset } = themeSlice.actions;
+export const { toggleLanguage, toggleMode, reset } = themeSlice.actions;
 export default themeSlice;
