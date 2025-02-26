@@ -176,6 +176,15 @@ export async function loader() {
 
   const notesData = await notesResponse.json();
 
+  if (notesData.code === 401) {
+    throw new Response(
+      JSON.stringify({ message: 'Your authentication token has expired' }),
+      {
+        status: 401,
+      }
+    );
+  }
+
   return notesData.data.notes;
 }
 
@@ -208,11 +217,16 @@ export async function action({ request }) {
 
   const responseData = await response.json();
 
-  if (
-    responseData.code === 401 ||
-    responseData.code === 400 ||
-    responseData.code === 422
-  ) {
+  if (responseData.code === 401) {
+    throw new Response(
+      JSON.stringify({ message: 'Your authentication token has expired' }),
+      {
+        status: 401,
+      }
+    );
+  }
+
+  if (responseData.code === 400 || responseData.code === 422) {
     return responseData;
   }
 

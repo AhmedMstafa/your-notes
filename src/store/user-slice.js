@@ -19,6 +19,28 @@ export const fetchUserData = createAsyncThunk(
 
     const userData = await userResponse.json();
 
+    if (userResponse.code === 401) {
+      throw new Response(
+        JSON.stringify({ message: 'Your authentication token has expired' }),
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (userData.code === 400 || userData.code === 422) {
+      return userData;
+    }
+
+    if (!userResponse.ok) {
+      throw new Response(
+        JSON.stringify({ message: 'Could not authenticate user.' }),
+        {
+          status: 500,
+        }
+      );
+    }
+
     return userData.data.users[0];
   }
 );
