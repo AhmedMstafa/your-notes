@@ -68,12 +68,11 @@ To get a local copy of the project up and running, follow these simple steps:
     ```
 3. Install the front-end dependencies:
     ```bash
-    cd client
     npm install
     ```
 4. Install the back-end dependencies:
     ```bash
-    cd ../server
+    cd back-end
     npm install
     ```
 5. Create a `.env` file in the `server` directory and add your environment variables:
@@ -87,12 +86,11 @@ To get a local copy of the project up and running, follow these simple steps:
 
 1. Start the back-end server:
     ```bash
-    cd server
     npm start
     ```
 2. Start the front-end development server:
     ```bash
-    cd ../client
+    cd ../
     npm start
     ```
 3. Open your web browser and navigate to `http://localhost:5000` to access the application.
